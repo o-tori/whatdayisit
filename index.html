@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="description" content="日付を入力すると、その日が何曜日なのか教えてくれるプログラムです。">
+<title>What Day Is It?</title>
+<link rel="stylesheet" href="whatdayisit.css">
+
+</head>
+
+<body>
+  <h2>What Day Is It?</h2>
+
+  <form id="container">
+      <label>Year</label>
+
+        <select name="select" id="select" onChange="insertYear();">
+          <option value="西暦">西暦</option>
+          <option value="令和">令和</option>
+          <option value="平成">平成</option>
+          <option value="昭和">昭和</option>
+          <option value="大正">大正</option>
+          <option value="明治">明治</option>
+        </select>
+
+        <div id="y">
+          <input type = "number" id = "year" value = "2000" style="text-align:right" pattern="\d{4}" maxlength="4" required>
+        </div>
+
+      <label>Month</label>
+        <input type = "number" id = "month" min="1" max="12" value = "1" style="text-align:right" pattern="\d*" required>
+
+      <label>Day</label>
+        <input type = "number" id = "day" min="1" max="31" value = "1" style="text-align:right" pattern="\d*" required>
+
+  </form>
+
+    <input type = "button" value = "Calculate" onClick = "calc()" >
+
+    <br><br>
+    <result id = "result">(Result will appear here)</result>
+
+  <!-- <hr> -->
+  <footer>
+    &copy T.S All Rights Reserved.
+  </footer>
+
+  <script>
+function insertYear(){
+  let era = document.getElementById("select").value;
+  let y = document.getElementById("y");
+  switch (era) {
+    case "西暦":
+      y.innerHTML='<input type = "number" id = "year" value = "2000" style="text-align:right" pattern="%d{4}"  required>';
+      break;
+    case "令和":
+      y.innerHTML='<input type = "number" id = "year" value = "1" min="1"  style="text-align:right" pattern="\d{2}" required>';
+      break;
+    case "平成":
+      y.innerHTML='<input type = "number" id = "year" value = "1" min="1" max="31"  style="text-align:right" pattern="\d{2}" required>';
+      break;
+    case "昭和":
+      y.innerHTML='<input type = "number" id = "year" value = "1" min="1" max="64"  style="text-align:right" pattern="\d{2}" required>';
+      break;
+    case "大正":
+      y.innerHTML='<input type = "number" id = "year" value = "1" min="1" max="15"  style="text-align:right" pattern="\d{2}" required>';
+      break;
+    case "明治":
+      y.innerHTML='<input type = "number" id = "year" value = "1" min="1" max="45"  style="text-align:right" pattern="\d{2}" required>';
+      break;
+  }
+}
+
+  function calc(){
+	  	let y = calcYear();
+	  	let m = document.getElementById("month").value - 0;
+	  	let d = document.getElementById("day").value - 0;
+
+	    if(check(y,m,d)){
+	       let day = new Date(y,m-1,d);
+	       let dayOfWeek = day.getDay();
+	       let dayOfWeekStr = ["日","月","火","水","木","金","土"][dayOfWeek];
+	       console.log("y:" + y + " m:" + m + " d:" + d);
+	       document.getElementById("result").innerHTML = "その日は" + dayOfWeekStr + "曜日だよ。";
+	    }else{
+        errMsg();
+      }
+  }
+
+  function check(y,m,d){
+	let era = document.getElementById("select").value;
+	let orgY = document.getElementById("year").value - 0;
+
+	if(m < 1 || 12 < m || d < 1 || 31 < d){
+		return false;
+	}else if((m == 2 && 29 < d) || ((m == 4 || m == 6 || m == 9 || m == 11) && 30 < d)){
+		return false;
+	}else if((y % 4 !=0) && m == 2 && 28 < d){
+		return false;
+	}else if(era != "西暦" && orgY < 1){
+		return false;
+	}else if((era == "平成" && 31 < orgY) || (era == "昭和" && 64 < orgY) || (era == "大正" && 15 < orgY) || (era == "明治" && 45 < orgY)){
+		return false;
+	}else{
+		return true;
+	}
+  }
+function errMsg(){
+	document.getElementById("result").innerHTML = '<div style="color:red">エラー：数字がおかしいみたいだよ。</div>';
+}
+
+
+  function calcYear(){
+    let era = document.getElementById("select").value;
+    let value = document.getElementById("year").value -0;
+    let year;
+    switch (era) {
+      case "西暦":
+        year = value;
+        break;
+      case "令和":
+        year = 2018 + value;
+        break;
+      case "平成":
+        year = 1988 + value;
+        break;
+      case "昭和":
+        year = 1925 + value;
+        break;
+      case "大正":
+        year = 1911 + value;
+        break;
+      case "明治":
+        year = 1867 + value;
+        break;
+    }
+    return year;
+  }
+
+  </script>
+</body>
+</html>
